@@ -22,8 +22,8 @@ class Account(models.Model):
     description = models.CharField(max_length=50)
     institution = models.ForeignKey(FinancialInstitution)
     type = models.ForeignKey(AccountType)
-    login_user = models.CharField(max_length=50, blank=True)
-    login_password = models.CharField(max_length=50, blank=True)
+    login_user = models.CharField(max_length=50, blank=True, default='')
+    login_password = models.CharField(max_length=50, blank=True, default='')
     
     def __unicode__(self):
         return self.description
