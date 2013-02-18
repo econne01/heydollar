@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block title %} Heydollar Spending Categories {% endblock title %}
+{% block page_description %} Personal Finance management spending categories {% endblock page_description %}
+
+{% block body %}
+    <p>To Do: Add homepage content here!</p>
+    <ul>Category List
+        <li>First Category Name</li>
+        {% for category in object_list %}
+        <li>{{ category.name }}</li>
+        {% endfor %}
+    </ul>
+{% endblock body %}
