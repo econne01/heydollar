@@ -1,0 +1,13 @@
+/* YOUR STYLES HERE  */
+header {
+    overflow: auto;
+}
+#nav_menu {
+    font-family: Verdana, Arial, Sans-Serif;
+    width: 80%;
+    display:block;
+}
+
+p {
+    clear : both;
+}
