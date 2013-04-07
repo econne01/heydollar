@@ -1,32 +1,11 @@
 from django.db import models
+from heydollar.account.models import Account
 
 class TransactionType(models.Model):
     name = models.CharField(max_length=50)
     
     def __unicode__(self):
         return self.name
-    
-class AccountType(models.Model):
-    name = models.CharField(max_length=50)
-    
-    def __unicode__(self):
-        return self.name
-    
-class FinancialInstitution(models.Model):
-    name = models.CharField(max_length=50)
-    
-    def __unicode__(self):
-        return self.name
-    
-class Account(models.Model):
-    description = models.CharField(max_length=50)
-    institution = models.ForeignKey(FinancialInstitution)
-    type = models.ForeignKey(AccountType)
-    login_user = models.CharField(max_length=50, blank=True, default='')
-    login_password = models.CharField(max_length=50, blank=True, default='')
-    
-    def __unicode__(self):
-        return self.description
     
 class Category(models.Model):
     name = models.CharField(max_length=50)
