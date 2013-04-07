@@ -7,7 +7,7 @@ class AccountType(models.Model):
         (1, 'Positive')
     )
     name = models.CharField(max_length=50)
-    base_sign = models.IntegerField(choices=BASE_SIGN_CHOICES, default=-1)
+    base_sign = models.IntegerField(choices=BASE_SIGN_CHOICES, default=1)
     
     def __unicode__(self):
         return self.name
