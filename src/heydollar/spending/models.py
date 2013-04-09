@@ -9,7 +9,7 @@ class TransactionType(models.Model):
         return self.name
     
 class Category(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
     parent = models.ForeignKey('self', null=True, blank=True)
     
     def __unicode__(self):

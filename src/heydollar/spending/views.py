@@ -17,7 +17,7 @@ class TransactionListView(ListView):
     
     def get_queryset(self):
         qs = super(TransactionListView, self).get_queryset()
-        return qs.order_by('date', 'description')
+        return qs.order_by('post_date', 'description')
     
     def get_context_data(self, **kwargs):
         context = super(TransactionListView, self).get_context_data(**kwargs)
