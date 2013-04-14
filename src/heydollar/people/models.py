@@ -2,13 +2,13 @@ from django.db import models
 
 class People(models.Model):
     GENDER_CHOICES = (
-        ('MAL', 'Male'),
-        ('FEM', 'Female')
+        ('M', 'Male'),
+        ('F', 'Female')
     )
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     birthdate = models.DateField()
-    gender = models.CharField(max_length=3,
+    gender = models.CharField(max_length=1,
                               choices=GENDER_CHOICES)
     
     def __unicode__(self):
