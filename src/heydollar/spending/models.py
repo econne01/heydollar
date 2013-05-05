@@ -55,16 +55,6 @@ class Transaction(models.Model):
     transacted_by = models.ForeignKey(People, null=True, blank=True)
     
     def __unicode__(self):
-        return '%s (%s, %s)' % (self.description, self.date, self.amount)
+        return '%s (%s, %s)' % (self.description, self.post_date, self.amount)
     
-    @staticmethod
-    def insert_update(txn_data):
-        ''' Parse the given data and either insert to database or update existing record
-            @param dictionary txn_data. Row element data of a transaction
-        '''
-        exist_cnt = Transaction.objects.filter(
-            post_date = txn_data['post_date'],
-            account = txn_data['account'],
-            orig_description = txn_data['orig_description']
-        )
-        print exist_cnt
+
