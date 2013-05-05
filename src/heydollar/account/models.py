@@ -28,3 +28,11 @@ class Account(models.Model):
     
     def __unicode__(self):
         return self.description
+
+class AccountNameMap(models.Model):
+    name = models.CharField(max_length=100)
+    user = models.ForeignKey(People)
+    account = models.ForeignKey(Account)
+    
+    def __unicode__(self):
+        return self.name

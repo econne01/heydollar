@@ -47,7 +47,10 @@ VALUES
 ('2013-01-03', 24.5, 9, 1, 31, 'Tcktweb Thestuffyousho', 'TCKTWEB*THESTUFFYOUSHO - SAN FRANCISCO CA 5772', 'Stuff You Should Know TV event')
 ;
 
-
+INSERT INTO account_accountNameMap (name, user_id, account_id)
+VALUES ('TOTAL CHECKING', 1, 3), ('CREDIT CARD', 1, 11),
+    ('MyAccess Checking', 1, 1), ('Regular Savings', 1, 2),
+    ('Fidelity Investments American Express Card', 1, 9);
 
 
 
