@@ -3,4 +3,3 @@ from heydollar.account.models import Account
 
 class AccountListView(ListView):
     model = Account
-    
