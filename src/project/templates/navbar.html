@@ -4,9 +4,10 @@
     		<ul class="nav">
     			<li><a href='/spending/categories'>Categories</a></li>
     			<li><a href='/spending/history'>Transactions</a></li>
-    			<li><input name="transactionHistoryUpload" type="file" />Upload Transaction History</li>
-    			<li><button class="modalInput" rel="#modTesting">Modal Testing</button></li>
+    			<li>
+    			    <button class="modalInput" rel="#txnUploadForm">Upload Transaction History</button>
+    			    <div class="modal" id="txnUploadForm">{% include "transactionUploadForm.html" %}</div>
+    			</li>
     		</ul>
     	</nav>
-        <div class="modal" id="modTesting"> <h2>This is my test text</h2></div>
 	</header>
