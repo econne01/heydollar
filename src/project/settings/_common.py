@@ -126,7 +126,10 @@ INSTALLED_APPS = (
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'heydollar',
+    'south',
+    'heydollar.account',
+    'heydollar.people',
+    'heydollar.spending',
 )
 
 # A sample logging configuration. The only tangible logging
