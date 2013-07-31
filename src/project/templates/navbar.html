@@ -2,18 +2,12 @@
 		<nav id='nav_menu' class="navbar">
     	    <a id='logo' class="brand" title='homepage' href='/'>Logo</a>
     		<ul class="nav">
-    			<li><a href='#'>Games</a></li>
-    			<li class='dropdown'>
-    			    <a href='#' class="dropdown-toggle" data-toggle="dropdown">
-    			        Players
-    				    <b class='caret'></b>
-    				</a>
-    				<ul class='dropdown-menu'>
-    					<li><a href='#'>Batters</a></li>
-    					<li><a href='#'>Hitters</a></li>
-    				</ul>
+    			<li><a href='/spending/categories'>Categories</a></li>
+    			<li><a href='/spending/history'>Transactions</a></li>
+    			<li>
+    			    <button class="modalInput" rel="#txnUploadForm">Upload Transaction History</button>
+    			    <div class="modal" id="txnUploadForm">{% include "transactionUploadForm.html" %}</div>
     			</li>
-    			<li><a href='contact'>Contact</a></li>
     		</ul>
     	</nav>
 	</header>

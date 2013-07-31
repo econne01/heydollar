@@ -3,16 +3,23 @@
 	<head>
 	    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 	    <meta http-equiv="Content-Language" content="en-us" />
-	    <title>{% block title %}{% endblock title %}</title>
+	    <title>{% block meta_title %}{% endblock meta_title %}</title>
 	    <meta name="description" content="{% block page_description %}Heydollar Personal Finance{% endblock page_description %}">
 	    
-	    {% block header_tags %}{% endblock header_tags %}
+	    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/main.css" />
+        {% block header_tags %}{% endblock header_tags %}
    	</head>
     <body>
     	<div class="container">
-    	{% block body %}{% endblock body %}
+    	<h1>{% block h1_header %}{% endblock h1_header %}</h1>
+    	{% include "navbar.html" %}
+        {% block body %}{% endblock body %}
     	</div>
-    	
+
+        <script src="http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js"></script>
+        <script src="{{ STATIC_URL }}bootstrap/js/bootstrap-dropdown.js"></script>
+        <script src="{{ STATIC_URL }}js/navbar.js"></script>
     	{% block include_scripts %}{% endblock include_scripts %}
     </body>
 </html>
