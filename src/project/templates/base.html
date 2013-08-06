@@ -16,9 +16,10 @@
     	{% include "navbar.html" %}
         {% block body %}{% endblock body %}
     	</div>
-    	
-    	<script src="{{ STATIC_URL }}js/jquery.js"></script>
+
+        <script src="http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js"></script>
         <script src="{{ STATIC_URL }}bootstrap/js/bootstrap-dropdown.js"></script>
+        <script src="{{ STATIC_URL }}js/navbar.js"></script>
     	{% block include_scripts %}{% endblock include_scripts %}
     </body>
 </html>

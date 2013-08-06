@@ -1,0 +1,6 @@
+<form enctype="multipart/form-data" action="/spending/upload/" method="post">
+    {% csrf_token %}
+    <input type="file" id="uploadHistoryInput" name="uploadHistoryInput"/>
+    <button type="submit"> OK </button>
+    <button type="button" class="close"> Cancel </button>
+</form>
