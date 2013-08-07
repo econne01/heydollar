@@ -3,21 +3,30 @@ from heydollar.spending.models import Transaction, TransactionType, Category
 from heydollar.account.models import AccountNameMap
 from heydollar.utils.date import smart_parse_date
 
-class Object(object):
-    pass
+class MintHistoryFileSchema(object):
+    ''' Simple class to define the column labels of a default Mint History csv file
+    '''
+    date = 'Date'
+    description = 'Description'
+    original_description = 'Original Description'
+    account = 'Account Name'
+    amount = 'Amount'
+    category = 'Category'
+    transaction_type = 'Transaction Type'
+    notes = 'Notes'
 
 class MintFileUploader():
     delimiter = '\t'
     # field_map converts file headers to database field names
-    file_fields = Object()
-    file_fields.date = 'Date'
-    file_fields.description = 'Description'
-    file_fields.original_description = 'Original Description'
-    file_fields.account = 'Account Name'
-    file_fields.amount = 'Amount'
-    file_fields.category = 'Category'
-    file_fields.transaction_type = 'Transaction Type'
-    file_fields.notes = 'Notes'
+    file_fields = MintHistoryFileSchema()
+#    file_fields.date = 'Date'
+#    file_fields.description = 'Description'
+#    file_fields.original_description = 'Original Description'
+#    file_fields.account = 'Account Name'
+#    file_fields.amount = 'Amount'
+#    file_fields.category = 'Category'
+#    file_fields.transaction_type = 'Transaction Type'
+#    file_fields.notes = 'Notes'
     
     field_map = {
         file_fields.date: 'post_date',
