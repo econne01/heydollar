@@ -1,10 +1,10 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-class HeydollarBaseViewTest(TestCase):
+class HeydollarIndexViewTest(TestCase):
 
     def setUp(self):
-        super(HeydollarBaseViewTest, self).setUp()
+        super(HeydollarIndexViewTest, self).setUp()
         self.view = reverse('index')
 
     def test_can_access_index_page(self):
@@ -12,3 +12,10 @@ class HeydollarBaseViewTest(TestCase):
         '''
         r = self.client.get(self.view)
         self.assertEqual(r.status_code, 200)
+
+    def test_index_page_includes_balance_sheet_summary_table(self):
+        ''' Index page content should include balance sheet summary table
+        '''
+        r = self.client.get(self.view)
+        print vars(r)
+        self.assertEqual(1,2)
