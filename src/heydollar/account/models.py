@@ -34,7 +34,7 @@ class Account(models.Model):
 
 class AccountNameMap(models.Model):
     name = models.CharField(max_length=100)
-    user = models.ForeignKey(People)
+    user = models.ForeignKey(People) # Why is user here? To distinguish between the owner of the MINT acct (this uer) and ACCOUNT?
     account = models.ForeignKey(Account)
     
     class Meta:

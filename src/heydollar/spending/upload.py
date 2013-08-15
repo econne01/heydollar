@@ -19,14 +19,6 @@ class MintFileUploader():
     delimiter = '\t'
     # field_map converts file headers to database field names
     file_fields = MintHistoryFileSchema()
-#    file_fields.date = 'Date'
-#    file_fields.description = 'Description'
-#    file_fields.original_description = 'Original Description'
-#    file_fields.account = 'Account Name'
-#    file_fields.amount = 'Amount'
-#    file_fields.category = 'Category'
-#    file_fields.transaction_type = 'Transaction Type'
-#    file_fields.notes = 'Notes'
     
     field_map = {
         file_fields.date: 'post_date',
