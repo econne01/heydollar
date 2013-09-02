@@ -27,6 +27,7 @@ class TestUploadMintHistoryTask(TestCase):
             user=person,
             account=account
         )
+        self.account_map.save()
 
     def tearDown(self):
         ''' Remove any test files as needed
@@ -91,11 +92,10 @@ class TestUploadMintHistoryTask(TestCase):
         ''' Must be able to convert a date string in upload file to date object
         '''
         upload_data = self.prepare_default_upload_file_data()
-        # Test parsing of format YYYY-MM-DD
-        upload_data[MintFileUploader.file_fields.date] = '2013-04-30'
+        # Test parsing of format MM/DD/YYYY
+        upload_data[MintFileUploader.file_fields.date] = '04/30/2013'
         db_data = self.uploader.map_row_to_db_format(upload_data)
-        date = datetime.date(2013, 4, 30)
-        self.assertEqual(db_data[self.uploader.file_map[self.uploader.file_fields.date]], date)
+        self.assertEqual(db_data[self.uploader.field_map[self.uploader.file_fields.date]], '2013-04-30')
 
     def test_can_parse_upload_file_description_field_with_tabs_to_string(self):
         ''' Must be able to convert a string object in upload file to string, even
