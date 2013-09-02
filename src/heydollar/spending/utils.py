@@ -1,4 +1,5 @@
-import csv
+import csv, os
+from heydollar import exceptions
 from heydollar.spending.models import Transaction, TransactionType, Category
 from heydollar.account.models import AccountNameMap
 from heydollar.utils.date import smart_parse_date
@@ -111,9 +112,18 @@ class MintFileUploader():
     def upload(self, filename):
         ''' Parse the given filename and insert/update the database with the financial transaction history
         '''
+        # Check whether file exists
+        if not os.path.exists(filename):
+            raise exceptions.HeydollarInvalidUploadFile('The file you are trying to upload does not exist')
         ifile = open(filename, 'r')
         reader = csv.DictReader(ifile, delimiter=self.delimiter)
+        is_first_row = True
         for row in reader:
+            if is_first_row:
+                if set(row.keys()) != set(self.field_map.keys()):
+                    raise exceptions.HeydollarInvalidUploadFile('Please upload a file with expected column headers')
+                is_first_row = False
+
             txn_data = self.map_row_to_db_format(row)
             self.insert_update(txn_data)
         

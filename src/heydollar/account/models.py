@@ -1,5 +1,5 @@
 from django.db import models
-from heydollar.people.models import People
+from heydollar.person.models import Person
 
 class AccountType(models.Model):
     BASE_SIGN_CHOICES = (
@@ -22,23 +22,23 @@ class Account(models.Model):
     description = models.CharField(max_length=100)
     institution = models.ForeignKey(FinancialInstitution)
     type = models.ForeignKey(AccountType)
-    owner = models.ForeignKey(People)
+    owner = models.ForeignKey(Person)
     login_user = models.CharField(max_length=50, blank=True, default='')
     login_password = models.CharField(max_length=50, blank=True, default='')
 
     class Meta:
-        unique_together = ((description, institution, type, owner),)
+        unique_together = (('description', 'institution', 'type', 'owner'),)
 
     def __unicode__(self):
         return self.description
 
 class AccountNameMap(models.Model):
     name = models.CharField(max_length=100)
-    user = models.ForeignKey(People) # Why is user here? To distinguish between the owner of the MINT acct (this uer) and ACCOUNT?
+    user = models.ForeignKey(Person) # Why is user here? To distinguish between the owner of the MINT acct (this uer) and ACCOUNT?
     account = models.ForeignKey(Account)
     
     class Meta:
-        unique_together = ((user, account),)
+        unique_together = (('user', 'account'),)
 
     def __unicode__(self):
         return self.name

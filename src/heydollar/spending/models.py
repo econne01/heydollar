@@ -1,6 +1,6 @@
 from django.db import models
 from heydollar.account.models import Account
-from heydollar.people.models import People
+from heydollar.person.models import Person
 
 class TransactionType(models.Model):
     name = models.CharField(max_length=50)
@@ -52,7 +52,7 @@ class Transaction(models.Model):
     orig_description = models.CharField(max_length=128)
     notes = models.TextField(blank=True)
     purpose_tags = models.ManyToManyField(PurposeTag, null=True, blank=True)
-    transacted_by = models.ForeignKey(People, null=True, blank=True)
+    transacted_by = models.ForeignKey(Person, null=True, blank=True)
     
     def __unicode__(self):
         return '%s (%s, %s)' % (self.description, self.post_date, self.amount)

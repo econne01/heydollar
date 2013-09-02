@@ -1,6 +1,6 @@
 from django.db import models
 
-class People(models.Model):
+class Person(models.Model):
     GENDER_CHOICES = (
         ('M', 'Male'),
         ('F', 'Female')

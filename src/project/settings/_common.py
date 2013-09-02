@@ -131,7 +131,7 @@ INSTALLED_APPS = (
     'south',
     'heydollar',
     'heydollar.account',
-    'heydollar.people',
+    'heydollar.person',
     'heydollar.spending',
 )
 

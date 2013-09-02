@@ -1,7 +1,12 @@
+import os
+from autofixture.base import AutoFixture
 from django.test import TestCase
+from django.conf import settings
+
+from heydollar import exceptions
 from heydollar.spending.utils import MintFileUploader
 from heydollar.account import models as account_models
-from heydollar.people import models as people_models
+from heydollar.person import models as person_models
 from heydollar.spending import models as spending_models
 
 class TestUploadMintHistoryTask(TestCase):
@@ -10,26 +15,32 @@ class TestUploadMintHistoryTask(TestCase):
 
     def setUp(self):
         super(TestUploadMintHistoryTask, self).setUp()
+        self.uploader = MintFileUploader()
         # Create necessary foreign key objects
-        self.txn_type = spending_models.TransactionType(name='debit')
-        self.category = spending_models.Category(name='Groceries')
-        self.financial_institution = account_models.FinancialInstitution(name='National Institution')
-        self.account_type = account_models.AccountType(name='Checking', base_sign=1)
-        self.person = people_models.Person(
-            first_name='Ericson',
-            last_name='Connelly',
-            birthdate='1999-12-31'
+        self.txn_type = AutoFixture(spending_models.TransactionType).create_one()
+        self.category = AutoFixture(spending_models.Category).create_one()
+        person = AutoFixture(person_models.Person).create_one()
+        account = AutoFixture(account_models.Account, generate_fk=True).create_one()
+        
+        self.account_map = account_models.AccountNameMap(
+            name='Account Map Name',
+            user=person,
+            account=account
         )
-        self.account = account_models.Account(
-            description = 'Official Heydollar Test Name',
-            institution = self.financial_institution,
-            type = self.account_type,
-            owner = self.person
-        )
-        self.account_map = account_models.AccountNameMap(name='Mint easy to read name', user=self.person, account=self.account)
 
-    def prepare_csv_file_row(self):
-        ''' Create a sample row of data from the default csv Mint history file download
+    def tearDown(self):
+        ''' Remove any test files as needed
+        '''
+        super(TestUploadMintHistoryTask, self).tearDown()
+        filename = 'FakeFileNameExample.txt'
+        filename = os.path.abspath(os.path.sep.join([settings.PROJECT_PATH, filename]))
+        if os.path.exists(filename):
+            os.remove(filename)
+
+
+    def prepare_default_upload_file_data(self):
+        ''' Helper function to create a default sample row of data  
+            from the default csv Mint history file download
         '''
         return {
             MintFileUploader.file_fields.date                   : '01/01/2013',
@@ -41,26 +52,61 @@ class TestUploadMintHistoryTask(TestCase):
             MintFileUploader.file_fields.account                : self.account_map.name,
         }
 
-    def test_can_map_download_file_row_data_to_database_spending_entry_object(self):
+    #---- TEST FILE INPUT ----#
+    def test_will_throw_error_on_dne_file_input_to_uploader(self):
+        ''' Must throw exception if input file to Uploader does not exist
+        '''
+        filename = 'FakeFileNameExample.txt'
+        filename = os.path.abspath(os.path.sep.join([settings.PROJECT_PATH, filename]))
+        self.assertFalse(os.path.exists(filename))
+
+        # A file that DNE throws error
+        self.assertRaises(
+            exceptions.HeydollarInvalidUploadFile,
+            self.uploader.upload,
+            filename
+        )
+
+    def test_will_throw_error_on_bad_format_file_input_to_uploader(self):
+        ''' Must throw exception if input file to Uploader has unexpected format
+        '''
+        filename = 'FakeFileNameExample.txt'
+        filename = os.path.abspath(os.path.sep.join([settings.PROJECT_PATH, filename]))
+        self.assertFalse(os.path.exists(filename))
+        
+        # Write unexpected column headers and data
+        ofile = open(filename, 'w')
+        ofile.write('\t'.join(['Header 1', 'Header 2']) + '\n')
+        ofile.write('\t'.join(['String data', 'Other string']) + '\n')
+        ofile.close()
+        self.assertTrue(os.path.exists(filename))
+        # Invalid file format must throw error
+        self.assertRaises(
+            exceptions.HeydollarInvalidUploadFile,
+            self.uploader.upload,
+            filename
+        )
+        self.assertEqual(1,2)
+
+    def can_map_download_file_row_data_to_database_spending_entry_object(self):
         ''' The map function should convert csv file format to a DB entry, with foreign key django objects
         '''
-        uploader = MintFileUploader()
-        db_data = uploader.map_row_to_db_format(self.prepare_csv_file_row())
+        db_data = uploader.map_row_to_db_format(self.prepare_default_upload_file_data())
         # Test all fields properly converted to new data format and new labels
         self.assertEqual(db_data[uploader.file_map[uploader.file_fields.transaction_type]], self.txn_type)
         self.assertEqual(db_data[uploader.file_map[uploader.file_fields.category]], self.category)
         self.assertEqual(db_data[uploader.file_map[uploader.file_fields.account]], self.account)
         
 
-    def test_can_map_date_format_yyyy_mm_dd(self):
+    def can_map_date_format_yyyy_mm_dd(self):
         ''' If the mint history file has dates formatted as YYYY-MM-DD, they will be read by mapper
         '''
         self.download_row_data[MintFileUploader.file_fields.date] = '2013-04-30'
         uploader = MintFileUploader()
-        db_data = uploader.map_row_to_db_format(self.prepare_csv_file_row())
+        db_data = uploader.map_row_to_db_format(self.prepare_default_upload_file_data())
         self.assertEqual(db_data[uploader.file_map[uploader.file_fields.account]], '2013-04-30')
 
-    def test_can_insert_a_new_db_row_from_history_data(self):
+    def can_insert_a_new_db_row_from_history_data(self):
         ''' The uploader can insert a record to database after mapping the CSV history row data
         '''
         uploader = MintFileUploader()
