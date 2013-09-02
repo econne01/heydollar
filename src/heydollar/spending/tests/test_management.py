@@ -1,4 +1,4 @@
-import os
+import os, datetime
 from autofixture.base import AutoFixture
 from django.test import TestCase
 from django.conf import settings
@@ -86,32 +86,75 @@ class TestUploadMintHistoryTask(TestCase):
             self.uploader.upload,
             filename
         )
-        self.assertEqual(1,2)
 
-    def can_map_download_file_row_data_to_database_spending_entry_object(self):
-        ''' The map function should convert csv file format to a DB entry, with foreign key django objects
+    def test_can_parse_upload_file_date_column_to_date_object(self):
+        ''' Must be able to convert a date string in upload file to date object
         '''
-        db_data = uploader.map_row_to_db_format(self.prepare_default_upload_file_data())
-        # Test all fields properly converted to new data format and new labels
-        self.assertEqual(db_data[uploader.file_map[uploader.file_fields.transaction_type]], self.txn_type)
-        self.assertEqual(db_data[uploader.file_map[uploader.file_fields.category]], self.category)
-        self.assertEqual(db_data[uploader.file_map[uploader.file_fields.account]], self.account)
-        
+        upload_data = self.prepare_default_upload_file_data()
+        # Test parsing of format YYYY-MM-DD
+        upload_data[MintFileUploader.file_fields.date] = '2013-04-30'
+        db_data = self.uploader.map_row_to_db_format(upload_data)
+        date = datetime.date(2013, 4, 30)
+        self.assertEqual(db_data[self.uploader.file_map[self.uploader.file_fields.date]], date)
 
-    def can_map_date_format_yyyy_mm_dd(self):
-        ''' If the mint history file has dates formatted as YYYY-MM-DD, they will be read by mapper
+    def test_can_parse_upload_file_description_field_with_tabs_to_string(self):
+        ''' Must be able to convert a string object in upload file to string, even
+            if it contains a '\t' or other delimiter character
         '''
-        self.download_row_data[MintFileUploader.file_fields.date] = '2013-04-30'
-        uploader = MintFileUploader()
-        db_data = uploader.map_row_to_db_format(self.prepare_default_upload_file_data())
-        self.assertEqual(db_data[uploader.file_map[uploader.file_fields.account]], '2013-04-30')
+        #@todo
+        pass
 
-    def can_insert_a_new_db_row_from_history_data(self):
-        ''' The uploader can insert a record to database after mapping the CSV history row data
+    def test_can_parse_upload_file_amount_field_to_decimal(self):
+        ''' Must be able to convert an amount string to decimal
         '''
-        uploader = MintFileUploader()
-        db_data = uploader.map_row_to_db_format(self.download_row_data)
-        txn_cnt = spending_models.Transaction.objects.count()
-        uploader.insert_update(db_data)
-        self.assertEqual(spending_models.Transaction.objects.count(), txn_cnt+1)
+        pass
+
+    def test_can_parse_upload_file_category_field_to_new_category_object(self):
+        ''' Must be able to convert category string to a new Category data object
+            if none exists
+        '''
+        pass
+
+    def test_can_parse_upload_file_category_field_to_existing_category_object(self):
+        ''' Must be able to convert category string to an existing Category data object
+            if it exists
+        '''
+        pass
+
+    def test_throw_error_for_upload_file_account_field_of_new_account_object(self):
+        ''' Must throw Exception for an account string of an Account object that does not exist
+        '''
+        pass
+
+    def test_can_parse_upload_file_account_field_to_existing_account_object(self):
+        ''' Must be able to convert account string to an existing Account data object
+            if it exists
+        '''
+        pass
+
+    def test_can_insert_new_upload_file_row_to_database(self):
+        ''' Must insert record to database when uploading new transaction data
+        '''
+        pass
+
+    def test_can_update_existing_upload_file_row_to_database(self):
+        ''' Must update record in database when uploading existing transaction data
+        '''
+        pass
+
+    def test_must_insert_duplicate_upload_file_row_to_database(self):
+        ''' Must insert new record to database when uploading duplicate transaction data
+            (ie, the same unique record fields occur multiple times in one upload file)
+        '''
+        pass
+
+    def test_can_differentiate_duplicate_database_entries_by_memo_field(self):
+        ''' Must select proper database entry to update (as needed) by matching memo field
+        '''
+        pass
+
+    def test_throw_error_for_ambiguous_duplicate_entry_updates(self):
+        ''' Must throw Exception when attempts to update memo field for duplicate row
+        '''
+        pass
 
