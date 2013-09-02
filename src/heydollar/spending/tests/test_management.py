@@ -1,5 +1,5 @@
 from django.test import TestCase
-from heydollar.spending.upload import MintFileUploader
+from heydollar.spending.utils import MintFileUploader
 from heydollar.account import models as account_models
 from heydollar.people import models as people_models
 from heydollar.spending import models as spending_models
@@ -28,8 +28,10 @@ class TestUploadMintHistoryTask(TestCase):
         )
         self.account_map = account_models.AccountNameMap(name='Mint easy to read name', user=self.person, account=self.account)
 
-        # Create a sample row of data from the default csv Mint history file download
-        self.download_row_data = {
+    def prepare_csv_file_row(self):
+        ''' Create a sample row of data from the default csv Mint history file download
+        '''
+        return {
             MintFileUploader.file_fields.date                   : '01/01/2013',
             MintFileUploader.file_fields.description            : 'Some Description goes here',
             MintFileUploader.file_fields.original_description   : 'The Original Description -- often hard to read',
@@ -43,7 +45,7 @@ class TestUploadMintHistoryTask(TestCase):
         ''' The map function should convert csv file format to a DB entry, with foreign key django objects
         '''
         uploader = MintFileUploader()
-        db_data = uploader.map_row_to_db_format(self.download_row_data)
+        db_data = uploader.map_row_to_db_format(self.prepare_csv_file_row())
         # Test all fields properly converted to new data format and new labels
         self.assertEqual(db_data[uploader.file_map[uploader.file_fields.transaction_type]], self.txn_type)
         self.assertEqual(db_data[uploader.file_map[uploader.file_fields.category]], self.category)
@@ -55,7 +57,7 @@ class TestUploadMintHistoryTask(TestCase):
         '''
         self.download_row_data[MintFileUploader.file_fields.date] = '2013-04-30'
         uploader = MintFileUploader()
-        db_data = uploader.map_row_to_db_format(self.download_row_data)
+        db_data = uploader.map_row_to_db_format(self.prepare_csv_file_row())
         self.assertEqual(db_data[uploader.file_map[uploader.file_fields.account]], '2013-04-30')
 
     def test_can_insert_a_new_db_row_from_history_data(self):

@@ -31,6 +31,7 @@ class MintFileUploader():
         file_fields.notes: 'notes'
     }
     # User_id of account owner whose file is being uploaded
+    #@todo: make this arbitrary
     user = 1 
     
     def insert_update(self, txn_data):
