@@ -121,7 +121,8 @@ class MintFileUploader():
         for row in reader:
             if is_first_row:
                 if set(row.keys()) != set(self.field_map.keys()):
-                    raise exceptions.HeydollarInvalidUploadFile('Please upload a file with expected column headers')
+                    raise exceptions.HeydollarInvalidUploadFile('Please upload a file with expected column headers, not %s'
+                        % (','.join(row.keys())))
                 is_first_row = False
 
             txn_data = self.map_row_to_db_format(row)
