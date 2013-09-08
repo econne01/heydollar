@@ -85,7 +85,7 @@ class TestUploadMintHistoryTask(TestCase):
         filename = os.path.abspath(os.path.sep.join([settings.PROJECT_PATH, self.fake_filename]))
         self.assertFalse(os.path.exists(filename))
 
-        # A file that DNE throws error
+        # A filename that DNE throws error
         self.assertRaises(
             exceptions.HeydollarInvalidUploadFile,
             self.uploader.upload,
@@ -131,8 +131,10 @@ class TestUploadMintHistoryTask(TestCase):
         # Write the test data to a file
         filename = os.path.abspath(os.path.sep.join([settings.PROJECT_PATH, self.fake_filename]))
         self.write_example_upload_file(filename, upload_data)
+        file = open(filename, 'r')
         # Upload the test data to database
-        self.uploader.upload(filename)
+        self.uploader.upload(file)
+        file.close()
         # Filter for the uploaded Txn from database
         txn = spending_models.Transaction.objects.order_by('-pk')[0]
         self.assertEqual(txn.description, test_string)
@@ -205,7 +207,9 @@ class TestUploadMintHistoryTask(TestCase):
         self.write_example_upload_file(filename, upload_data)
         # Upload the test data to database
         txn_cnt = spending_models.Transaction.objects.count()
-        self.uploader.upload(filename)
+        file = open(filename, 'r')
+        self.uploader.upload(file)
+        file.close()
         self.assertEqual(spending_models.Transaction.objects.count(), txn_cnt+1)
 
     def test_can_update_existing_upload_file_row_to_database(self):
@@ -224,7 +228,9 @@ class TestUploadMintHistoryTask(TestCase):
         txn.save()
         # Upload the test data to database
         txn_cnt = spending_models.Transaction.objects.count()
-        self.uploader.upload(filename)
+        file = open(filename, 'r')
+        self.uploader.upload(file)
+        file.close()
         txn = spending_models.Transaction.objects.get(pk=txn.pk)
         self.assertEqual(spending_models.Transaction.objects.count(), txn_cnt)
         self.assertEqual(txn.notes, new_notes)
@@ -240,7 +246,9 @@ class TestUploadMintHistoryTask(TestCase):
         self.write_example_upload_file(filename, upload_data, repeat_rows=duplicate_cnt)
         # Upload the test data to database
         txn_cnt = spending_models.Transaction.objects.count()
-        self.uploader.upload(filename)
+        file = open(filename, 'r')
+        self.uploader.upload(file)
+        file.close()
         self.assertEqual(spending_models.Transaction.objects.count(), txn_cnt+duplicate_cnt)
 
     def test_can_differentiate_duplicate_database_entries_by_notes_field(self):
@@ -266,12 +274,11 @@ class TestUploadMintHistoryTask(TestCase):
         self.write_example_upload_file(filename, upload_data)
         # Upload the test data to database. Should find and revise Txn2
         txn_cnt = spending_models.Transaction.objects.count()
-        self.uploader.upload(filename)
+        file = open(filename, 'r')
+        self.uploader.upload(file)
+        file.close()
         self.assertEqual(spending_models.Transaction.objects.count(), txn_cnt)
         txn2 = spending_models.Transaction.objects.get(pk=txn2.pk)
-        print upload_data
-        print self.category
-        print category2
         self.assertEqual(txn2.category, category2)
 
     def test_throw_error_for_ambiguous_duplicate_entry_updates(self):
@@ -295,9 +302,12 @@ class TestUploadMintHistoryTask(TestCase):
         filename = os.path.abspath(os.path.sep.join([settings.PROJECT_PATH, self.fake_filename]))
         self.write_example_upload_file(filename, upload_data)
         # Upload should throw Error.  Impossible to know if Txn1 or Txn2 notes changed
+        file = open(filename, 'r')
         self.assertRaises(
             exceptions.HeydollarAmbiguousEntry,
             self.uploader.upload,
-            filename
+            file
         )
+        file.close()
+        
 

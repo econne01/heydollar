@@ -138,26 +138,20 @@ class MintFileUploader():
                 db_row[self.field_map[field]] = row[field]
         return db_row
 
-    def upload(self, filename):
+    def upload(self, file):
         ''' Parse the given filename and insert/update the database with the financial transaction history
         '''
-        # Check whether file exists
-        if not os.path.exists(filename):
-            raise exceptions.HeydollarInvalidUploadFile('The file you are trying to upload does not exist')
-        ifile = open(filename, 'r')
-        reader = csv.DictReader(ifile, delimiter=self.delimiter)
+        try:
+            reader = csv.DictReader(file, delimiter=self.delimiter)
+        except Exception:
+            raise exceptions.HeydollarInvalidUploadFile('The file you are trying to upload has an error')
         is_first_row = True
         for row in reader:
             if is_first_row:
-                if set(row.keys()) != set(self.field_map.keys()):
+                if not set(self.field_map.keys()).issubset(set(row.keys())):
                     raise exceptions.HeydollarInvalidUploadFile('Please upload a file with expected column headers, not %s'
                         % (','.join(row.keys())))
                 is_first_row = False
 
             txn_data = self.map_row_to_db_format(row)
             self.insert_update(txn_data)
-        
-if __name__ == '__main__':
-    filename = r'C:\Users\Eric\Documents\Finances\Mint Project\transactions_testing.txt'
-    loader = MintFileUploader()
-    loader.upload(filename)
