@@ -34,7 +34,10 @@ class MintFileUploader():
     # User_id of account owner whose file is being uploaded
     #@todo: make this arbitrary
     user = 1 
-    
+
+    def __init__(self, *args, **kwargs):
+        self.processed_txns = []
+
     def insert_update(self, txn_data):
         ''' Parse the given data and either insert to database or update existing record
             @param dictionary txn_data. Row element data of a transaction
@@ -42,22 +45,40 @@ class MintFileUploader():
         transactions = Transaction.objects.filter(
             post_date = txn_data['post_date'],
             account = txn_data['account'],
-            orig_description = txn_data['orig_description']
+            orig_description = txn_data['orig_description'],
+            amount = txn_data['amount']
         )
+        txn = None
         if transactions.count() == 0:
-            print 'Adding transaction...'
+            # Add transaction
             txn = Transaction()
-            for field in txn_data:
-                setattr(txn, field, txn_data[field])
-            txn.save()
-            print txn
         elif transactions.count() == 1:
-            print 'Updating transaction...'
-            for txn in transactions:
-                for field in txn_data:
-                    setattr(txn, field, txn_data[field])
-                txn.save()
-                print txn
+            # Check if this is a duplicate record already processed in this file
+            # If so, create new, separate duplicate record
+            if transactions[0] in self.processed_txns:
+                txn = Transaction()
+            else:
+                # Update transaction
+                txn = transactions[0]
+        elif transactions.count() > 1:
+            # Found duplicate entries
+            # Try to select a single entry from Notes field
+            notes_txns = transactions.filter(notes=txn_data['notes'])
+            if notes_txns.count() == 1:
+                txn = notes_txns[0]
+        if txn is None:
+            raise exceptions.HeydollarAmbiguousEntry(
+                'Could not determine which entry data refers to',
+                txn_data
+            )
+        for field in txn_data:
+            setattr(txn, field, txn_data[field])
+        txn.save()
+        # Track each processed transaction in case its duplicate is 
+        # later processed
+        if txn not in self.processed_txns:
+            self.processed_txns.append(txn)
+        return txn
         
     def map_row_to_db_format(self, row):
         ''' Create a new dictionary with same data, but converts file headers to database field names
@@ -73,12 +94,20 @@ class MintFileUploader():
         # parse account
         if self.file_fields.account in row:
             field = self.file_fields.account
-            account_map = AccountNameMap.objects.get(
+            account_filter = AccountNameMap.objects.filter(
                 user = self.user,
                 name = row[field]
             )
-            db_row[self.field_map[field]] = account_map.account
-            del row[field]
+            if account_filter.count() < 1:
+                raise exceptions.HeydollarDoesNotExist(
+                    'This Account (%s), please create it then re-upload'
+                    % (row[field])
+                )
+            elif account_filter.count() == 1:
+                db_row[self.field_map[field]] = account_filter[0].account
+                del row[field]
+            else:
+                raise Exception('There are multiple Accounts specified for name %s' %row[field])
             
         # parse transaction type
         if self.file_fields.transaction_type in row:
@@ -92,9 +121,9 @@ class MintFileUploader():
         # parse category
         if self.file_fields.category in row:
             field = self.file_fields.category 
-            category = Category.objects.get(
+            category = Category.objects.get_or_create(
                 name = row[field]
-            )
+            )[0]
             db_row[self.field_map[field]] = category
             del row[field]
             
@@ -108,7 +137,7 @@ class MintFileUploader():
             if field in self.field_map:
                 db_row[self.field_map[field]] = row[field]
         return db_row
-    
+
     def upload(self, filename):
         ''' Parse the given filename and insert/update the database with the financial transaction history
         '''

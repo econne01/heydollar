@@ -21,12 +21,12 @@ class TestUploadMintHistoryTask(TestCase):
         self.txn_type = AutoFixture(spending_models.TransactionType).create_one()
         self.category = AutoFixture(spending_models.Category).create_one()
         person = AutoFixture(person_models.Person).create_one()
-        account = AutoFixture(account_models.Account, generate_fk=True).create_one()
+        self.account = AutoFixture(account_models.Account, generate_fk=True).create_one()
         
         self.account_map = account_models.AccountNameMap(
             name='Account Map Name',
             user=person,
-            account=account
+            account=self.account
         )
         self.account_map.save()
 
@@ -52,6 +52,30 @@ class TestUploadMintHistoryTask(TestCase):
             MintFileUploader.file_fields.category               : self.category.name,
             MintFileUploader.file_fields.account                : self.account_map.name,
             MintFileUploader.file_fields.notes                  : ''
+        }
+
+    def write_example_upload_file(self, filename, upload_data, repeat_rows=1):
+        # Write the test data to a file
+        ofile = open(filename, 'w')
+        ofile.write('\t'.join(upload_data.keys()) + '\n')
+        for i in range(repeat_rows):
+            ofile.write('\t'.join([upload_data[k] for k in upload_data.keys()]) + '\n')
+        ofile.close()
+
+    def get_default_create_txn_data(self):
+        ''' Setup a dictionary of default values for required fields to create a Transaction object
+        '''
+        upload_data = self.prepare_default_upload_file_data()
+        date = datetime.datetime.strptime(upload_data[self.uploader.file_fields.date], '%m/%d/%Y')
+        date = date.strftime('%Y-%m-%d')
+        return {
+            'post_date': date,
+            'amount': upload_data[self.uploader.file_fields.amount],
+            'account': self.account,
+            'type': self.txn_type,
+            'category': self.category,
+            'description': upload_data[self.uploader.file_fields.description],
+            'orig_description': upload_data[self.uploader.file_fields.original_description],
         }
 
     #---- TEST FILE INPUT ----#
@@ -106,10 +130,7 @@ class TestUploadMintHistoryTask(TestCase):
         upload_data[self.uploader.file_fields.description] = '"' + test_string + '"'
         # Write the test data to a file
         filename = os.path.abspath(os.path.sep.join([settings.PROJECT_PATH, self.fake_filename]))
-        ofile = open(filename, 'w')
-        ofile.write('\t'.join(upload_data.keys()) + '\n')
-        ofile.write('\t'.join([upload_data[k] for k in upload_data.keys()]) + '\n')
-        ofile.close()
+        self.write_example_upload_file(filename, upload_data)
         # Upload the test data to database
         self.uploader.upload(filename)
         # Filter for the uploaded Txn from database
@@ -181,10 +202,7 @@ class TestUploadMintHistoryTask(TestCase):
         upload_data = self.prepare_default_upload_file_data()
         # Write the test data to a file
         filename = os.path.abspath(os.path.sep.join([settings.PROJECT_PATH, self.fake_filename]))
-        ofile = open(filename, 'w')
-        ofile.write('\t'.join(upload_data.keys()) + '\n')
-        ofile.write('\t'.join([upload_data[k] for k in upload_data.keys()]) + '\n')
-        ofile.close()
+        self.write_example_upload_file(filename, upload_data)
         # Upload the test data to database
         txn_cnt = spending_models.Transaction.objects.count()
         self.uploader.upload(filename)
@@ -193,21 +211,93 @@ class TestUploadMintHistoryTask(TestCase):
     def test_can_update_existing_upload_file_row_to_database(self):
         ''' Must update record in database when uploading existing transaction data
         '''
-        pass
+        upload_data = self.prepare_default_upload_file_data()
+        new_notes = 'New notes to be saved'
+        upload_data[self.uploader.file_fields.notes]=new_notes
+        # Write the test data to a file
+        filename = os.path.abspath(os.path.sep.join([settings.PROJECT_PATH, self.fake_filename]))
+        self.write_example_upload_file(filename, upload_data)
+        # Create an Entry in database with test data
+        txn_data = self.get_default_create_txn_data()
+        txn = spending_models.Transaction(**txn_data)
+        txn.notes = 'Old notes to be edited'
+        txn.save()
+        # Upload the test data to database
+        txn_cnt = spending_models.Transaction.objects.count()
+        self.uploader.upload(filename)
+        txn = spending_models.Transaction.objects.get(pk=txn.pk)
+        self.assertEqual(spending_models.Transaction.objects.count(), txn_cnt)
+        self.assertEqual(txn.notes, new_notes)
 
     def test_must_insert_duplicate_upload_file_row_to_database(self):
         ''' Must insert new record to database when uploading duplicate transaction data
             (ie, the same unique record fields occur multiple times in one upload file)
         '''
-        pass
+        upload_data = self.prepare_default_upload_file_data()
+        # Write the test data to a file
+        duplicate_cnt = 2
+        filename = os.path.abspath(os.path.sep.join([settings.PROJECT_PATH, self.fake_filename]))
+        self.write_example_upload_file(filename, upload_data, repeat_rows=duplicate_cnt)
+        # Upload the test data to database
+        txn_cnt = spending_models.Transaction.objects.count()
+        self.uploader.upload(filename)
+        self.assertEqual(spending_models.Transaction.objects.count(), txn_cnt+duplicate_cnt)
 
-    def test_can_differentiate_duplicate_database_entries_by_memo_field(self):
-        ''' Must select proper database entry to update (as needed) by matching memo field
+    def test_can_differentiate_duplicate_database_entries_by_notes_field(self):
+        ''' Must select proper database entry to update (as needed) by matching notes field
         '''
-        pass
+        upload_data = self.prepare_default_upload_file_data()
+        txn_cnt = spending_models.Transaction.objects.count()
+        # Create 2 duplicate Transactions
+        txn_data = self.get_default_create_txn_data()
+        txn_data['notes'] = 'First Txn Notes'
+        txn1 = spending_models.Transaction(**txn_data)
+        txn1.save()
+        notes2 = 'Second Txn Notes'
+        txn_data['notes'] = notes2
+        txn2 = spending_models.Transaction(**txn_data)
+        txn2.save()
+        self.assertEqual(spending_models.Transaction.objects.count(), txn_cnt+2)
+        # Write data to a test file, with EDITED category for Txn2
+        upload_data[self.uploader.file_fields.notes] = notes2
+        category2 = AutoFixture(spending_models.Category).create_one()
+        upload_data[self.uploader.file_fields.category] = category2.name
+        filename = os.path.abspath(os.path.sep.join([settings.PROJECT_PATH, self.fake_filename]))
+        self.write_example_upload_file(filename, upload_data)
+        # Upload the test data to database. Should find and revise Txn2
+        txn_cnt = spending_models.Transaction.objects.count()
+        self.uploader.upload(filename)
+        self.assertEqual(spending_models.Transaction.objects.count(), txn_cnt)
+        txn2 = spending_models.Transaction.objects.get(pk=txn2.pk)
+        print upload_data
+        print self.category
+        print category2
+        self.assertEqual(txn2.category, category2)
 
     def test_throw_error_for_ambiguous_duplicate_entry_updates(self):
         ''' Must throw Exception when attempts to update memo field for duplicate row
         '''
-        pass
+        upload_data = self.prepare_default_upload_file_data()
+        txn_cnt = spending_models.Transaction.objects.count()
+        # Create 2 duplicate Transactions
+        txn_data = self.get_default_create_txn_data()
+        txn_data['notes'] = 'First Txn Notes'
+        txn1 = spending_models.Transaction(**txn_data)
+        txn1.save()
+        notes2 = 'Second Txn Notes'
+        txn_data['notes'] = notes2
+        txn2 = spending_models.Transaction(**txn_data)
+        txn2.save()
+        self.assertEqual(spending_models.Transaction.objects.count(), txn_cnt+2)
+        # Write data to a test file, with THIRD notes field
+        notes3 = 'Third Txn Notes'
+        upload_data[self.uploader.file_fields.notes] = notes3
+        filename = os.path.abspath(os.path.sep.join([settings.PROJECT_PATH, self.fake_filename]))
+        self.write_example_upload_file(filename, upload_data)
+        # Upload should throw Error.  Impossible to know if Txn1 or Txn2 notes changed
+        self.assertRaises(
+            exceptions.HeydollarAmbiguousEntry,
+            self.uploader.upload,
+            filename
+        )
 

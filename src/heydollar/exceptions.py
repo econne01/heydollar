@@ -10,3 +10,9 @@ class HeydollarDoesNotExist(Exception):
         (ie, Account) that does not exist
     '''
     pass
+
+class HeydollarAmbiguousEntry(Exception):
+    ''' Thrown when a field has changed on a Txn entry that cannot be
+        determined from a set of duplicate entries (ie, changed Memo field)
+    '''
+    pass
