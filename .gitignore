@@ -10,4 +10,4 @@ downloads
 eggs
 parts
 src/*.egg-info
-**/local.py
+src/project/settings/local.py

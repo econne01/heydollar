@@ -5,7 +5,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'heydollar', # Or path to database file if using sqlite3.
         'USER': 'root',
-        'PASSWORD': 'max',
+        'PASSWORD': 'password',
         'HOST': '',
         'PORT': '',
     }
