@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block meta_title %} Heydollar Accounts List {% endblock meta_title %}
+
+{% block h1_header %}Accounts List{% endblock h1_header %}
+{% block body %}
+    <table>
+        <tr>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Institution</th>
+        </tr>
+        {% for account in object_list %}
+        <tr>
+            <td>{{ account.type.name }}</td>
+            <td>{{ account.description }}</td>
+            <td>{{ account.institution.name }}</td>
+            <td></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan=3>No Accounts available</td></tr>
+        {% endfor %}
+    </table>
+{% endblock body %}
