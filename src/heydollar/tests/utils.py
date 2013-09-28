@@ -1,6 +1,6 @@
 from django.test import TestCase
 from heydollar.account import models as account_models
-from heydollar.people import models as people_models
+from heydollar.person import models as person_models
 from heydollar.spending import models as spending_models
 
 class HeydollarBaseTestCase(TestCase):
@@ -11,13 +11,13 @@ class HeydollarBaseTestCase(TestCase):
         self.confirm_prerequisite_objects(
             account_models.FinancialInstitution,
             account_models.AccountType,
-            people_models.People,
+            person_models.Person,
         )
         data = {
             'description': 'Test Account Description',
             'institution': account_models.FinancialInstitution.objects.get(pk=1),
             'type': account_models.AccountType.objects.get(pk=1),
-            'owner': people_models.People.objects.get(pk=1),
+            'owner': person_models.Person.objects.get(pk=1),
         }
         data.update(kwargs)
         instance = account_models.Account(**data)
@@ -29,12 +29,12 @@ class HeydollarBaseTestCase(TestCase):
         '''
         self.confirm_prerequisite_objects(
             account_models.Account,
-            people_models.People,
+            person_models.Person,
         )
         data = {
             'name': 'Test Account Name Map',
             'account': account_models.Account.objects.get(pk=1),
-            'owner': people_models.People.objects.get(pk=1),
+            'owner': person_models.Person.objects.get(pk=1),
         }
         data.update(kwargs)
         instance = account_models.AccountNameMap(**data)
@@ -93,17 +93,17 @@ class HeydollarBaseTestCase(TestCase):
         instance.save()
         return instance
 
-    def create_people(self, **kwargs):
-        ''' Create test instance of People
+    def create_person(self, **kwargs):
+        ''' Create test instance of Person
         '''
         data = {
             'first_name': 'Test First',
             'last_name': 'Test Last',
             'birthdate': '1990-01-01',
-            'gender': people_models.People.GENDER_CHOICES[0][0],
+            'gender': person_models.Person.GENDER_CHOICES[0][0],
         }
         data.update(kwargs)
-        instance = people_models.People(**data)
+        instance = person_models.Person(**data)
         instance.save()
         return instance
 

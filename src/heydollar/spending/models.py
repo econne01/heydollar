@@ -2,12 +2,6 @@ from django.db import models
 from heydollar.account.models import Account
 from heydollar.person.models import Person
 
-class TransactionType(models.Model):
-    name = models.CharField(max_length=50)
-    
-    def __unicode__(self):
-        return self.name
-    
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True)
     parent = models.ForeignKey('self', null=True, blank=True)
@@ -42,11 +36,15 @@ class Transaction(models.Model):
     @field transacted_by: optional override for account__owner. For example, wife buys shoes on husband's card or
         son buys plane ticket on mom's card.
     '''
+    TXN_TYPE_CHOICES = (
+        ('DEBIT', 'DEBIT'),
+        ('CREDIT', 'CREDIT'),
+    )
     post_date = models.DateField()
     transacted_date = models.DateField(null=True, blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     account = models.ForeignKey(Account)
-    type = models.ForeignKey(TransactionType)
+    type = models.CharField(max_length=7, choices=TXN_TYPE_CHOICES)
     category = models.ForeignKey(Category)
     description = models.CharField(max_length=128, blank=True)
     orig_description = models.CharField(max_length=128, blank=True)

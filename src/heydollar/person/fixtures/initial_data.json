@@ -1,0 +1,12 @@
+[
+  {
+    "model": "person.person",
+    "pk": 1,
+    "fields": {
+      "first_name": "Eric",
+      "last_name": "Connelly",
+      "birthdate": "1986-05-27",
+      "gender": "M"
+    }
+  }
+]

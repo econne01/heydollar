@@ -1,6 +1,6 @@
 import csv, os
 from heydollar import exceptions
-from heydollar.spending.models import Transaction, TransactionType, Category
+from heydollar.spending.models import Transaction, Category
 from heydollar.account.models import AccountNameMap
 from heydollar.utils.date import smart_parse_date
 
@@ -112,10 +112,7 @@ class MintFileUploader():
         # parse transaction type
         if self.file_fields.transaction_type in row:
             field = self.file_fields.transaction_type 
-            txn_type = TransactionType.objects.get(
-                name = row[field]
-            )
-            db_row[self.field_map[field]] = txn_type
+            db_row[self.field_map[field]] = row[field]
             del row[field]
                 
         # parse category

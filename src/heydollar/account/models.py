@@ -1,17 +1,6 @@
 from django.db import models
 from heydollar.person.models import Person
 
-class AccountType(models.Model):
-    BASE_SIGN_CHOICES = (
-        (-1, 'Negative'),
-        (1, 'Positive')
-    )
-    name = models.CharField(unique=True, max_length=50)
-    base_sign = models.IntegerField(choices=BASE_SIGN_CHOICES, default=1)
-
-    def __unicode__(self):
-        return self.name
-    
 class FinancialInstitution(models.Model):
     name = models.CharField(unique=True, max_length=50)
     
@@ -19,9 +8,21 @@ class FinancialInstitution(models.Model):
         return self.name
     
 class Account(models.Model):
+    TYPE_CHOICES = (
+        ('CHECKING', 'CHECKING'),
+        ('SAVING', 'SAVING'),
+        ('PERSONAL INVESTMENT', 'PERSONAL INVESTMENT'),
+        ('RETIREMENT INVESTMENT', 'RETIREMENT INVESTMENT'),
+        ('CREDIT CARD', 'CREDIT CARD'),
+    )
+    DEBIT_SIGN_CHOICES = (
+        (-1, 'Decrease Account Value'),
+        (1, 'Increase Account Value')
+    )
     description = models.CharField(max_length=100)
     institution = models.ForeignKey(FinancialInstitution)
-    type = models.ForeignKey(AccountType)
+    type = models.CharField(max_length=31, choices=TYPE_CHOICES)
+    debit_sign = models.IntegerField(choices=DEBIT_SIGN_CHOICES, default=-1)
     owner = models.ForeignKey(Person)
     login_user = models.CharField(max_length=50, blank=True, default='')
     login_password = models.CharField(max_length=50, blank=True, default='')

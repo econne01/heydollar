@@ -18,7 +18,6 @@ class TestUploadMintHistoryTask(TestCase):
         super(TestUploadMintHistoryTask, self).setUp()
         self.uploader = MintFileUploader()
         # Create necessary foreign key objects
-        self.txn_type = AutoFixture(spending_models.TransactionType).create_one()
         self.category = AutoFixture(spending_models.Category).create_one()
         person = AutoFixture(person_models.Person).create_one()
         self.account = AutoFixture(account_models.Account, generate_fk=True).create_one()
@@ -48,7 +47,7 @@ class TestUploadMintHistoryTask(TestCase):
             MintFileUploader.file_fields.description            : 'Some Description goes here',
             MintFileUploader.file_fields.original_description   : 'The Original Description -- often hard to read',
             MintFileUploader.file_fields.amount                 : '123.45',
-            MintFileUploader.file_fields.transaction_type       : self.txn_type.name,
+            MintFileUploader.file_fields.transaction_type       : 'DEBIT',
             MintFileUploader.file_fields.category               : self.category.name,
             MintFileUploader.file_fields.account                : self.account_map.name,
             MintFileUploader.file_fields.notes                  : ''
@@ -72,7 +71,7 @@ class TestUploadMintHistoryTask(TestCase):
             'post_date': date,
             'amount': upload_data[self.uploader.file_fields.amount],
             'account': self.account,
-            'type': self.txn_type,
+            'type': 'DEBIT',
             'category': self.category,
             'description': upload_data[self.uploader.file_fields.description],
             'orig_description': upload_data[self.uploader.file_fields.original_description],
