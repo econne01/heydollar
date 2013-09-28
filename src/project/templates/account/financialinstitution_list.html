@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block meta_title %} Heydollar Financial Institution List {% endblock meta_title %}
+
+{% block h1_header %}Financial Institution List{% endblock h1_header %}
+{% block body %}
+    <a class="button" href="/account/institution/add">Add New</a>
+    <table>
+    {% if object_list %}
+        <tr>
+            <th>Name</th>
+        </tr>
+        {% for obj in object_list %}
+        <tr>
+            <td>{{ obj.name}}</td>
+        </tr>
+        {% endfor %}
+    {% else %}
+        <tr><td colspan=2>No Objects available</td></tr>
+    {% endif %}
+    </table>
+{% endblock body %}
