@@ -5,23 +5,23 @@ from heydollar.person.models import Person
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True)
     parent = models.ForeignKey('self', null=True, blank=True)
-    
+
     def __unicode__(self):
         return self.name
-    
+
 class PurposeTag(models.Model):
     name = models.CharField(max_length=100)
     type = models.ForeignKey('PurposeTagType')
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
-    
+
     def __unicode__(self):
         return self.name
-    
+
 class PurposeTagType(models.Model):
     name = models.CharField(max_length=100)
     parent = models.ForeignKey('self', null=True, blank=True)
-    
+
     def __unicode__(self):
         return self.name
 
@@ -51,8 +51,8 @@ class Transaction(models.Model):
     notes = models.TextField(blank=True)
     purpose_tags = models.ManyToManyField(PurposeTag, null=True, blank=True)
     transacted_by = models.ForeignKey(Person, null=True, blank=True)
-    
+
     def __unicode__(self):
         return '%s (%s, %s)' % (self.description, self.post_date, self.amount)
-    
+
 

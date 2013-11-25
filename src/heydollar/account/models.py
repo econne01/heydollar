@@ -3,10 +3,10 @@ from heydollar.person.models import Person
 
 class FinancialInstitution(models.Model):
     name = models.CharField(unique=True, max_length=50)
-    
+
     def __unicode__(self):
         return self.name
-    
+
 class Account(models.Model):
     TYPE_CHOICES = (
         ('CHECKING', 'CHECKING'),
@@ -37,7 +37,7 @@ class AccountNameMap(models.Model):
     name = models.CharField(max_length=100)
     user = models.ForeignKey(Person) # Why is user here? To distinguish between the owner of the MINT acct (this uer) and ACCOUNT?
     account = models.ForeignKey(Account)
-    
+
     class Meta:
         unique_together = (('user', 'account'),)
 
