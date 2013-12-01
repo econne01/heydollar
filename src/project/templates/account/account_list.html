@@ -12,12 +12,18 @@
             <th>Type</th>
             <th>Description</th>
             <th>Institution</th>
+            <th></th>
         </tr>
         {% for account in object_list %}
         <tr>
             <td>{{ account.type }}</td>
             <td>{{ account.description }}</td>
             <td>{{ account.institution.name }}</td>
+            <td>
+                <a class="button" href="/account/{{ account.id }}">
+                    <img class="action-icon" src="/static/images/pencil_icon.jpg"/>
+                </a>
+            </td>
             <td></td>
         </tr>
         {% endfor %}

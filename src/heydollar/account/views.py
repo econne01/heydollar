@@ -12,6 +12,11 @@ class AccountCreateView(CreateView):
     success_url=reverse_lazy('account_list')
     fields = ['description', 'type', 'institution']
 
+class AccountUpdateView(UpdateView):
+    model = Account
+    success_url=reverse_lazy('account_list')
+    #fields = ['description', 'type', 'institution']
+
 class FinancialInstitutionListView(ListView):
     model = FinancialInstitution
 

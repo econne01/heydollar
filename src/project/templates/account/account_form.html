@@ -2,6 +2,6 @@
     Redirect Message {{ request.GET.account_name }}
 </div>
 <form action="/account/add" method="post">{% csrf_token %}
-{{ form.as_p }}
-<input type="submit" value="Submit" />
+    {{ form.as_p }}
+    <input type="submit" value="Submit" />
 </form>

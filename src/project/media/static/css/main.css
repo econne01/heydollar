@@ -22,3 +22,8 @@ header {
 p {
     clear : both;
 }
+
+.action-icon {
+    height: 15px;
+    width: 15px;
+}
