@@ -34,10 +34,9 @@ def upload_history(request):
         try:
             uploader.upload(input_file)
         except Exception as e:
-            from pudb import set_trace; set_trace();
             redirect_url = '%s?%s=%s' % (reverse('account_form'), e.error_field, e.error_value)
             return HttpResponseRedirect(redirect_url)
-        if redirect is not None:
-            return redirect
+        if redirect_url is not None:
+            return redirect_url
 
     return HttpResponseRedirect('/') # Redirect after POST

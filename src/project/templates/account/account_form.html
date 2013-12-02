@@ -1,7 +1,12 @@
+{% if request.GET.account_name %}
 <div class='alert'>
-    Redirect Message {{ request.GET.account_name }}
+    Please create the account for: "{{ request.GET.account_name }}"
 </div>
+{% endif %}
 <form action="/account/add" method="post">{% csrf_token %}
     {{ form.as_p }}
+    {% for field in form %}
+        {{ field.label_tag }} {{ field }}
+    {% endfor %}
     <input type="submit" value="Submit" />
 </form>
