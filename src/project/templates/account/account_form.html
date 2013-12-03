@@ -4,9 +4,11 @@
 </div>
 {% endif %}
 <form action="/account/add" method="post">{% csrf_token %}
-    {{ form.as_p }}
-    {% for field in form %}
-        {{ field.label_tag }} {{ field }}
-    {% endfor %}
+    {{ form.mapped_name.label_tag }} {{ form.mapped_name }}
+    {{ form.description.label_tag }} {{ form.description }}
+    {{ form.institution.label_tag }} {{ form.institution }}
+    {{ form.type.label_tag }} {{ form.type }}
+    {{ form.debit_sign.label_tag }} {{ form.debit_sign }}
+    {{ form.owner.label_tag }} {{ form.owner }}
     <input type="submit" value="Submit" />
 </form>

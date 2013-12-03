@@ -169,7 +169,6 @@ class MintFileUploader():
         for row in reader:
             if is_first_row:
                 if not set(self.field_map.keys()).issubset(set(row.keys())):
-                    print row
                     raise exceptions.HeydollarInvalidUploadFile('Please upload a file with expected column headers of %s, not %s'
                         % (','.join(self.field_map.keys()), ','.join(row.keys())))
                 is_first_row = False
