@@ -11,6 +11,7 @@ setup(
     py_modules=['run_transaction_summary'],
     install_requires = [
         'Click>=6.0',
+        'csv',
     ],
     entry_points='''
         [console_scripts]
