@@ -2,20 +2,30 @@
 This file contains a mapping of transaction categories to SUMMARY categories
 """
 
+
+CATEGORIES_TO_IGNORE = [
+    '',
+    'Income',
+    'IGNORE',
+]
+
 SUMMARY_CATEGORIES = [
-    'Housing',
-    'Food',
     'Child care',
-    'Social & Enjoyment',
-    'Upkeep',
-    'Travel',
+    'Food',
+    'Housing',
+    'Income',
     'Insurance',
+    'Social & Enjoyment',
     'Taxes',
+    'Travel',
+    'Upkeep',
     'Other',
 ]
 
 # This map is for semi-broad (mid-level detail) categories, grouped up to most broad summary categories
 BROAD_TO_SUMMARY_CATEGORY_MAP = {
+    '': 'IGNORE',
+
     # CHILD CARE
     'Child care': 'Child care',
 
@@ -27,8 +37,8 @@ BROAD_TO_SUMMARY_CATEGORY_MAP = {
     "Utility Bills": 'Housing',
 
     # INCOME
-    # 'Passive Income': 'Income',
-    # 'Salary': 'Income',
+    'Passive Income': 'Income',
+    'Salary': 'Income',
 
     # INSURANCE
     'Insurance': 'Insurance',
@@ -54,6 +64,8 @@ BROAD_TO_SUMMARY_CATEGORY_MAP = {
 
 # This map is for most detailed categories, grouped up to semi-broad (mid-level detail) categories
 DETAIL_TO_SEMI_BROAD_CATEGORY_MAP = {
+    "Air Travel": "Travel",
+    "Alcohol & Bars": "Social & Enjoyment",
     "Auto & Transport": "Travel",
     "Baby Supplies": "Maintenance Expense",
     "Babysitter & Daycare": "Other",
