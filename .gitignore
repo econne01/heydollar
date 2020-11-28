@@ -10,4 +10,6 @@ downloads
 eggs
 parts
 src/*.egg-info
-src/project/settings/local.py
+
+# Personal Configuration values for Eric. Find copies in Google Drive
+config/account_owner.py
