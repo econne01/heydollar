@@ -26,7 +26,23 @@ def get_summary_spending_category(txn_category):
     elif txn_category in SUMMARY_CATEGORIES:
         return txn_category
     else:
-        raise DataCleanlinessException(f'${txn_category} does not map to a SUMMARY category!')
+        raise DataCleanlinessException(f'{txn_category} does not map to a SUMMARY category!')
+
+
+def date_to_interval_date(txn_date, time_interval):
+    """
+    Convert a date to a "start of" date for a time interval
+    depending on what time of time_interval is given.
+    @param {String} txn_date: eg, 2020-12-31
+    @param {String} time_interval: one of [D, W, M, Y]
+    @return {String} eg, '2020-12-01'
+    """
+    if time_interval == 'Y':
+        return f'{txn_date[:4]}-01-01'
+    elif time_interval in ('M', 'W'):
+        return f'{txn_date[:7]}-01'
+    else:
+        return txn_date
 
 
 def standardize_date_format(txn_date):
@@ -63,7 +79,7 @@ def cli(transaction_file_path, start_date, end_date, time_interval, owner, run_m
     """CLI script to aggregate Mint.com transaction data"""
     if end_date is None:
         end_date = datetime.now().strftime('%Y-%m-%d')
-    SPENDING_SUMMARY = { c: Decimal('0.0') for c in SUMMARY_CATEGORIES }
+    SPENDING_SUMMARY = {}
     DATA_SCRUB_ISSUES = {
         'UNKNOWN Accounts (Missing Owner)': {},
         'UNKNOWN Transaction Categories (Missing in Map)': {},
@@ -96,6 +112,9 @@ def cli(transaction_file_path, start_date, end_date, time_interval, owner, run_m
             txn_date = standardize_date_format(row_dict['Date'])
             if txn_date < start_date or txn_date > end_date:
                 continue
+            summary_date = date_to_interval_date(txn_date, time_interval)
+            if summary_date not in SPENDING_SUMMARY:
+                SPENDING_SUMMARY[summary_date] = { c: Decimal('0.0') for c in SUMMARY_CATEGORIES }
 
             # If row qualifies, then add it to the appropriate bucket of SPENDING_SUMMARY
             row_dict['Amount'] = Decimal(row_dict['Amount'])
@@ -114,7 +133,7 @@ def cli(transaction_file_path, start_date, end_date, time_interval, owner, run_m
             if category in CATEGORIES_TO_IGNORE:
                 continue
 
-            SPENDING_SUMMARY[category] += row_dict['Amount']
+            SPENDING_SUMMARY[summary_date][category] += row_dict['Amount']
 
     if run_mode == 'data-scrub':
         print(DATA_SCRUB_ISSUES)
@@ -123,4 +142,8 @@ def cli(transaction_file_path, start_date, end_date, time_interval, owner, run_m
         print(DATA_SCRUB_ISSUES)
         print('\n')
         print('Spending Summary:')
-        print(SPENDING_SUMMARY)
+        interval_dates = list(SPENDING_SUMMARY.keys())
+        interval_dates.sort()
+        for idate in interval_dates:
+            print(idate)
+            print(SPENDING_SUMMARY[idate])
