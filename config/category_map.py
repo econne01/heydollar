@@ -28,6 +28,7 @@ BROAD_TO_SUMMARY_CATEGORY_MAP = {
 
     # CHILD CARE
     'Child care': 'Child care',
+    'Kids': 'Child care',
 
     # FOOD
     'Food expense': 'Food',
@@ -66,13 +67,17 @@ BROAD_TO_SUMMARY_CATEGORY_MAP = {
 DETAIL_TO_SEMI_BROAD_CATEGORY_MAP = {
     "Air Travel": "Travel",
     "Alcohol & Bars": "Social & Enjoyment",
+    "Amusement": "Social & Enjoyment",
+    "Arts": "Social & Enjoyment",
     "Auto & Transport": "Travel",
+    "Auto Insurance": "Insurance",
     "Baby Supplies": "Maintenance Expense",
     "Babysitter & Daycare": "Other",
     "Bank Fee": "Other",
     "Bills & Utilities": "Utility Bills",
     "Bonus": "Salary",
     "Books": "Shopping",
+    "Books & Supplies": "Shopping",
     "Bus": "Travel",
     "Business Services": "Other",
     "Buy": "",
@@ -124,6 +129,8 @@ DETAIL_TO_SEMI_BROAD_CATEGORY_MAP = {
     "Interest Paid": "Other",
     "Internet": "Utility Bills",
     "Investments": "",
+    "Kids": "Kids",
+    "Kids Activities": "Kids",
     "Late Fee": "Other",
     "Laundry": "Maintenance Expense",
     "Membership Dues": "Social & Enjoyment",
