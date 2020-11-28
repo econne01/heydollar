@@ -144,6 +144,10 @@ def cli(transaction_file_path, start_date, end_date, time_interval, owner, run_m
         print('Spending Summary:')
         interval_dates = list(SPENDING_SUMMARY.keys())
         interval_dates.sort()
-        for idate in interval_dates:
-            print(idate)
-            print(SPENDING_SUMMARY[idate])
+        with open('summary.csv', 'w', newline='') as csvfile:
+            csvwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+            csvwriter.writerow(['Interval Date'] + SUMMARY_CATEGORIES)
+            for idate in interval_dates:
+                print(idate)
+                print(SPENDING_SUMMARY[idate])
+                csvwriter.writerow([idate] + [SPENDING_SUMMARY[idate][category] for category in SUMMARY_CATEGORIES])
