@@ -66,13 +66,14 @@ BROAD_TO_SUMMARY_CATEGORY_MAP = {
 # This map is for most detailed categories, grouped up to semi-broad (mid-level detail) categories
 DETAIL_TO_SEMI_BROAD_CATEGORY_MAP = {
     "Air Travel": "Travel",
+    "Activity/Event": "Social & Enjoyment",
     "Alcohol & Bars": "Social & Enjoyment",
     "Amusement": "Social & Enjoyment",
     "Arts": "Social & Enjoyment",
     "Auto & Transport": "Travel",
     "Auto Insurance": "Insurance",
     "Baby Supplies": "Maintenance Expense",
-    "Babysitter & Daycare": "Other",
+    "Babysitter & Daycare": "Child care",
     "Bank Fee": "Other",
     "Bills & Utilities": "Utility Bills",
     "Bonus": "Salary",
