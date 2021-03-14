@@ -22,7 +22,7 @@ def get_summary_spending_category(txn_category):
         mid_category = DETAIL_TO_SEMI_BROAD_CATEGORY_MAP[txn_category]
         return BROAD_TO_SUMMARY_CATEGORY_MAP[mid_category]
     elif txn_category in BROAD_TO_SUMMARY_CATEGORY_MAP:
-        return BROAD_TO_SUMMARY_CATEGORY_MAP[mid_category]
+        return BROAD_TO_SUMMARY_CATEGORY_MAP[txn_category]
     elif txn_category in SUMMARY_CATEGORIES:
         return txn_category
     else:

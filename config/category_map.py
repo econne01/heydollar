@@ -7,6 +7,7 @@ CATEGORIES_TO_IGNORE = [
     '',
     'Income',
     'IGNORE',
+    'Loans',
 ]
 
 SUMMARY_CATEGORIES = [
@@ -43,6 +44,9 @@ BROAD_TO_SUMMARY_CATEGORY_MAP = {
 
     # INSURANCE
     'Insurance': 'Insurance',
+
+    # LOAN
+    'Loans': 'Loans',
 
     # SOCIAL & ENJOYMENT
     'Social & Enjoyment': 'Social & Enjoyment',
@@ -138,6 +142,8 @@ DETAIL_TO_SEMI_BROAD_CATEGORY_MAP = {
     "Late Fee": "Other",
     "Laundry": "Maintenance Expense",
     "Loan Insurance": "Insurance",
+    "Loan Payment": "Loans",
+    "Loan Principal": "Loans",
     "Membership Dues": "Social & Enjoyment",
     "Misc Expenses": "Other",
     "Mobile Phone": "Utility Bills",
