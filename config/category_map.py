@@ -76,7 +76,7 @@ DETAIL_TO_SEMI_BROAD_CATEGORY_MAP = {
     "Auto & Transport": "Travel",
     "Auto Insurance": "Insurance",
     "Baby Supplies": "Maintenance Expense",
-    "Babysitter & Daycare": "Other",
+    "Babysitter & Daycare": "Child care",
     "Bank Fee": "Other",
     "Bills & Utilities": "Utility Bills",
     "Bonus": "Salary",
