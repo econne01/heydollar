@@ -11,7 +11,7 @@ setup(
     py_modules=['run_transaction_summary'],
     install_requires = [
         'Click>=6.0',
-        'csv',
+        # 'csv', # Should be included in Python 3
     ],
     entry_points='''
         [console_scripts]
