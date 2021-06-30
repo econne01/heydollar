@@ -11,6 +11,7 @@ CATEGORIES_TO_IGNORE = [
 ]
 
 SUMMARY_CATEGORIES = [
+    'Car & Auto',
     'Child care',
     'Food',
     'Housing',
