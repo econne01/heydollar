@@ -55,6 +55,7 @@ BROAD_TO_SUMMARY_CATEGORY_MAP = {
     'Taxes': 'Taxes',
 
     # TRAVEL
+    'Car & Auto': 'Car & Auto',
     'Travel': 'Travel',
 
     # UPKEEP
@@ -79,6 +80,7 @@ DETAIL_TO_SEMI_BROAD_CATEGORY_MAP = {
     "ATM Fee": "Other",
     "Auto & Transport": "Travel",
     "Auto Insurance": "Insurance",
+    "Auto Payment": "Car & Auto",
     "Baby Supplies": "Maintenance Expense",
     "Babysitter & Daycare": "Child care",
     "Bank Fee": "Other",
@@ -117,7 +119,7 @@ DETAIL_TO_SEMI_BROAD_CATEGORY_MAP = {
     "From Savings": "",
     "Furnishings": "Housing expense (Rent)",
     "Gambling": "Other",
-    "Gas & Fuel": "Travel",
+    "Gas & Fuel": "Car & Auto",
     "Gift": "Shopping",
     "Gifts & Donations": "Shopping",
     "Groceries": "Food expense",
@@ -156,7 +158,7 @@ DETAIL_TO_SEMI_BROAD_CATEGORY_MAP = {
     "New Clothes": "Shopping",
     "Office Supplies": "Shopping",
     "Other Insurance": "Insurance",
-    "Parking": "Travel",
+    "Parking": "Car & Auto",
     "Paycheck": "Salary",
     "Personal Care": "Maintenance Expense",
     "Pet Food & Supplies": "Other",
