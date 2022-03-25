@@ -28,16 +28,17 @@ a college fund for children that should not count toward your own net worth or s
 This script is designed to take a detailed transaction history from Mint.com and output a summary of spending over time.
 The default mode is to aggregate spending into broad categories (eg, "Housing" or "Food"), per *month*.
 
-You can run the summary script in default mode, such as
-```
-run_transaction_summary /path/to/transactions.csv
-```
-Or you can choose a specifice date range and time-interval (Day, Week, Month or Year), such as
-```
-run_transaction_summary /path/to/transactions.csv --start-date 2020-01-01 --end-date 2020-03-31 --time-interval M
-```
+You can run the summary script in default mode, as follows
+1. Login to [mint.com](https://mint.intuit.com/transactions) and download all of your transactions
+2. Copy the file to this local repo, `cp ~/Downloads/transactions.csv .`
+3. `workon heydollar`
+4. Run the summary `run_transaction_summary /path/to/transactions.csv --start-date 2020-01-01 --end-date 2020-03-31 --time-interval M`
+5. Review the output in `summary.csv`
 
 ### Data Scrubbing and troubleshooting
 You may notice that not all transactions are properly categorized, or that not all categories are known.
 For example, say that at some point "Daycare Tuition" becomes a new category. The script will mark this as "Unknown"
 spending. You can view a list of un-identified categories by running the script in "data-scrub" mode.
+```
+run_transaction_summary /path/to/transactions.csv --run-mode data-scrub
+```
