@@ -145,6 +145,7 @@ DETAIL_TO_SEMI_BROAD_CATEGORY_MAP = {
     "Late Fee": "Other",
     "Laundry": "Maintenance Expense",
     "Loan Insurance": "Insurance",
+    "Loan Interest": "Passive Income",
     "Loan Payment": "Loans",
     "Loan Principal": "Loans",
     "Membership Dues": "Social & Enjoyment",
